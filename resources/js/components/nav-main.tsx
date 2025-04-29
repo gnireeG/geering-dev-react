@@ -1,27 +1,30 @@
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { type NavItemGroup } from '@/types';
+import { Link } from '@inertiajs/react';
 
-export function NavMain({ items = [] }: { items: NavItem[] }) {
-    const page = usePage();
+export function NavMain({ groups = [] }: { groups: NavItemGroup[] }) {
     return (
-        <SidebarGroup className="px-2 py-0">
-            <SidebarGroupLabel>Platform</SidebarGroupLabel>
-            <SidebarMenu>
-                {items.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton  
-                            asChild isActive={item.href === page.url}
-                            tooltip={{ children: item.title }}
-                        >
-                            <Link href={item.href} prefetch>
-                                {item.icon && <item.icon />}
-                                <span>{item.title}</span>
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                ))}
-            </SidebarMenu>
-        </SidebarGroup>
+        <>
+            {groups.map((group) => (
+                <SidebarGroup className="px-2 py-0" key={group.title + Math.random().toString()}>
+                    {group.title && <SidebarGroupLabel>{group.title}</SidebarGroupLabel>}
+                    <SidebarMenu>
+                        {group.items.map((item) => (
+                            <SidebarMenuItem key={item.title}>
+                                <SidebarMenuButton
+                                    asChild isActive={route().current() === item.href}
+                                    tooltip={{ children: item.title }}
+                                >
+                                    <Link href={route(item.href)} prefetch>
+                                        {item.icon && <item.icon />}
+                                        <span>{item.title}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        ))}
+                    </SidebarMenu>
+                </SidebarGroup>
+            ))}
+        </>
     );
 }
